@@ -1,11 +1,12 @@
 # Use the official Windows NanoServer image as base
 FROM mcr.microsoft.com/windows/nanoserver:1709
 
-# Download the Node.js installer for Windows (64-bit)
-ADD https://nodejs.org/dist/v14.19.0/node-v14.19.0-x64.msi nodejs_installer.msi
+# Copy the Node.js installer and the PowerShell script to the container
+COPY node-v14.19.0-x64.msi C:/
+COPY install-node.ps1 C:/
 
-# Install Node.js using PowerShell
-RUN powershell -Command Start-Process -FilePath 'C:\nodejs_installer.msi' -ArgumentList '/quiet', '/qn', '/norestart' -Wait
+# Run the PowerShell script to install Node.js
+RUN powershell -ExecutionPolicy Bypass -File C:\install-node.ps1
 
 # Set the working directory inside the container
 WORKDIR C:\app
