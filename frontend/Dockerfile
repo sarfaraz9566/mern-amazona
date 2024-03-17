@@ -1,5 +1,5 @@
-# Use the official Node.js image as base
-FROM mcr.microsoft.com/windows/nanoserver:1809 AS builder
+# Use the official Microsoft Windows NanoServer image as base
+FROM mcr.microsoft.com/windows/nanoserver
 
 # Set working directory
 WORKDIR /app
