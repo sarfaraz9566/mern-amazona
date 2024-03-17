@@ -1,12 +1,18 @@
 # Use the official Microsoft Windows NanoServer image as base
 FROM mcr.microsoft.com/windows/nanoserver:1709
 
-# Copy the Node.js installer and the PowerShell script to the container
-COPY node-v14.19.0-x64.msi C:/
-COPY install-node.ps1 C:/
+# Install Chocolatey package manager
+RUN powershell -Command \
+    Set-ExecutionPolicy Bypass -Scope Process -Force; \
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; \
+    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
-# Run the PowerShell script to install Node.js
-RUN powershell -ExecutionPolicy Bypass -File C:\install-node.ps1
+# Install Node.js version 14 using Chocolatey
+RUN choco install nodejs-lts -y
+
+# Verify Node.js and npm versions
+RUN node -v
+RUN npm -v
 
 # Set the working directory inside the container
 WORKDIR C:\app
