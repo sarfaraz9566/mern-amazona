@@ -5,10 +5,7 @@ FROM mcr.microsoft.com/windows/nanoserver:1709
 RUN curl.exe -o node.zip https://nodejs.org/dist/v9.2.0/node-v9.2.0-win-x64.zip && \
   mkdir "C:\\Program Files\\node" && \
   tar.exe -xf node.zip -C "C:\\Program Files\\node" --strip-components=1
-
-#Add node to PATH
-ENV PATH “C:\\Program Files\\node:%PATH%”
-
+  
 # Set the working directory inside the container
 WORKDIR C:\app
 
