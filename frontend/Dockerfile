@@ -1,14 +1,19 @@
-# Use the official Windows Server Core image as the base image
-FROM mcr.microsoft.com/windows/servercore:ltsc2019
+# Use the Windows NanoServer base image
+FROM mcr.microsoft.com/windows/nanoserver:1809
 
-# Download the Node.js installer for Windows (64-bit)
-ADD https://nodejs.org/dist/v14.19.0/node-v14.19.0-x64.msi nodejs_installer.msi
+# Set environment variables
+ENV NODE_VERSION 14.17.1
+ENV NPM_VERSION 6.14.13
 
-# Install Node.js using PowerShell
-RUN powershell -Command Start-Process -FilePath 'C:\nodejs_installer.msi' -ArgumentList '/quiet', '/qn', '/norestart' -Wait
+# Install Node.js and NPM
+RUN curl -SL "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-x64.msi" -o node.msi && \
+    Start-Process -Wait -FilePath "msiexec.exe" -ArgumentList "/i", "node.msi", "/quiet" && \
+    Remove-Item -Force node.msi && \
+    npm install -g npm@$NPM_VERSION && \
+    npm cache clean --force
 
-# Set the working directory inside the container
-WORKDIR C:\app
+# Set working directory
+WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
