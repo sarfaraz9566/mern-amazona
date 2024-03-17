@@ -1,18 +1,13 @@
 # Use the official Microsoft Windows NanoServer image as base
 FROM mcr.microsoft.com/windows/nanoserver:1709
 
-# Install Chocolatey package manager
-RUN powershell -Command \
-    Set-ExecutionPolicy Bypass -Scope Process -Force; \
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; \
-    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+# Download the package we want and unzip it to our destination
+RUN curl.exe -o node.zip https://nodejs.org/dist/v9.2.0/node-v9.2.0-win-x64.zip && \
+  mkdir "C:\\Program Files\\node" && \
+  tar.exe -xf node.zip -C "C:\\Program Files\\node" --strip-components=1
 
-# Install Node.js version 14 using Chocolatey
-RUN choco install nodejs-lts -y
-
-# Verify Node.js and npm versions
-RUN node -v
-RUN npm -v
+#Add node to PATH
+ENV PATH “C:\\Program Files\\node:%PATH%”
 
 # Set the working directory inside the container
 WORKDIR C:\app
