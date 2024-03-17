@@ -1,8 +1,14 @@
 # Use the official Microsoft Windows NanoServer image as base
 FROM mcr.microsoft.com/windows/nanoserver:1709
 
-# Set working directory
-WORKDIR /app
+# Download the Node.js installer for Windows (64-bit)
+ADD https://nodejs.org/dist/v14.19.0/node-v14.19.0-x64.msi nodejs_installer.msi
+
+# Install Node.js silently without UI
+RUN msiexec /i nodejs_installer.msi /quiet /qn /norestart
+
+# Set the working directory inside the container
+WORKDIR C:\app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
